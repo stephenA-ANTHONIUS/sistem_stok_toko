@@ -8,6 +8,7 @@ use App\Observers\OfflineTransactionItemObserver;
 use App\Observers\StockEntryItemObserver;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
             if ($this->app->environment('production')) {
-        \URL::forceScheme('https');
+        URL::forceScheme('https');
     }
         // Gunakan Tailwind-compatible pagination
         Paginator::useTailwind();
