@@ -19,5 +19,8 @@
     "url": "https://github.com/stephenA-ANTHONIUS/sistem_stok_toko/issues"
   },
   "homepage": "https://github.com/stephenA-ANTHONIUS/sistem_stok_toko#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "vite": "^8.0.13"
+  }
 }
