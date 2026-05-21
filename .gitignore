@@ -21,6 +21,4 @@ yarn-error.log
 /.vscode
 /bootstrap/cache/*
 !/bootstrap/cache/.gitignore
-!/bootstrap/cache/packages.php
-!/bootstrap/cache/services.php
 !bootstrap/cache/.gitkeep
