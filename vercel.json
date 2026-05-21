@@ -8,6 +8,9 @@
         {
             "src": "public/**",
             "use": "@vercel/static"
+        },
+        {
+            "buildCommand": "composer install --no-dev && php artisan config:cache && php artisan view:cache && php artisan route:cache"
         }
     ],
     "routes": [

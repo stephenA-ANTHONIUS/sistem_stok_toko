@@ -1,6 +1,6 @@
 public function register(): void
 {
-    // Hapus semua isi di sini, tidak perlu register ViewServiceProvider manual
+    // kosongkan, tidak perlu isi apapun
 }
 
 public function boot(): void
