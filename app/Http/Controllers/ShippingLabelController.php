@@ -21,9 +21,6 @@ class ShippingLabelController extends Controller
         return view('shipping-labels.create');
     }
 
-    /**
-     * STEP 1: Upload PDF → parse → simpan ke session → redirect ke preview
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -43,10 +40,7 @@ class ShippingLabelController extends Controller
             $rawText = 'Gagal membaca PDF: ' . $e->getMessage();
         }
 
-        // Simpan file dulu ke storage
         $path = $file->store('resi', 'public');
-
-        // Simpan hasil parse ke session untuk ditampilkan di halaman preview
         Session::put('shipping_label_preview', [
             'image_path' => $path,
             'raw_text'   => $rawText,
@@ -56,9 +50,6 @@ class ShippingLabelController extends Controller
         return redirect()->route('shipping-labels.preview');
     }
 
-    /**
-     * STEP 2: Tampilkan halaman preview hasil scan PDF
-     */
     public function showPreview()
     {
         $data = Session::get('shipping_label_preview');
@@ -70,7 +61,6 @@ class ShippingLabelController extends Controller
 
         $products = Product::orderBy('nama_produk', 'asc')->get();
 
-        // Cocokkan hasil scan dengan produk di database
         $mappedItems = collect($data['items'])->map(function ($item) use ($products) {
             $scanName = trim($item['produk'] ?? '');
             $matchedProduct = $this->findBestMatchingProduct($scanName, $products);
@@ -88,9 +78,6 @@ class ShippingLabelController extends Controller
         return view('shipping-labels.preview', compact('data', 'mappedItems', 'products'));
     }
 
-    /**
-     * STEP 3: Konfirmasi & simpan ke database (memicu pengurangan stok)
-     */
     public function confirmStore(Request $request)
     {
         $items = [];
@@ -134,7 +121,6 @@ class ShippingLabelController extends Controller
             'items'      => $items,
         ]);
 
-        // Hapus data session setelah tersimpan
         Session::forget('shipping_label_preview');
 
         return redirect()->route('shipping-labels.index')
@@ -229,23 +215,7 @@ class ShippingLabelController extends Controller
 
         return $bestProduct;
     }
-
-    /**
-     * =========================================================================
-     * CORE PARSING LOGIC
-     * =========================================================================
-     * Dibuat SAMA persis dengan versi Filament (ShippingLabelResource) yang
-     * sudah terbukti berjalan dengan benar.
-     *
-     * PERBEDAAN UTAMA dari versi controller lama:
-     * - TIDAK ada | stripping (nama variasi dipertahankan)
-     * - TIDAK ada k→000 conversion
-     * - Dedup key = nama LENGKAP (termasuk variasi setelah |)
-     *
-     * Ini penting agar nama produk yang tersimpan di DB bisa dicocokkan
-     * dengan tepat saat di halaman Edit.
-     * =========================================================================
-     */
+    
     private function parseItems(string $text): array
     {
         $items = [];

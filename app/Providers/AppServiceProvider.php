@@ -15,10 +15,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Gunakan Tailwind-compatible pagination
         Paginator::useTailwind();
 
-        // Daftarkan observer yang sudah ada (tidak diubah)
         OfflineTransactionItem::observe(OfflineTransactionItemObserver::class);
     }
 }

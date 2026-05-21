@@ -19,9 +19,6 @@ class StockObserver
         $product->save();
     }
 
-    /**
-     * Handle the ShippingLabelItem "deleted" event.
-     */
     public function deleted(ShippingLabelItem $shippingLabelItem): void
     {
         $product = $shippingLabelItem->product;
@@ -29,17 +26,12 @@ class StockObserver
         $product->save();
     }
 
-    /**
-     * Handle the ShippingLabelItem "restored" event.
-     */
+
     public function restored(ShippingLabelItem $shippingLabelItem): void
     {
         //
     }
 
-    /**
-     * Handle the ShippingLabelItem "force deleted" event.
-     */
     public function forceDeleted(ShippingLabelItem $shippingLabelItem): void
     {
         //

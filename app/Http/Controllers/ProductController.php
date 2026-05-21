@@ -21,12 +21,10 @@ class ProductController extends Controller
             $query->where('status', $request->status);
         }
 
-        // FITUR BARU: Pengurutan berdasarkan jumlah stok
         if ($request->filled('sort_stok')) {
             $sortDirection = $request->sort_stok === 'asc' ? 'asc' : 'desc';
             $query->orderBy('jumlah_stok', $sortDirection);
         } else {
-            // Default urutan jika filter stok tidak dipilih
             $query->latest();
         }
 
@@ -42,7 +40,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        // Menambahkan validasi unik agar ID Produk tidak duplikat saat input baru
         $data = $request->validate([
             'id_produk'     => ['required', 'string', 'max:255', 'unique:products,id_produk'],
             'nama_produk'   => ['required', 'string', 'max:255'],
@@ -51,7 +48,6 @@ class ProductController extends Controller
             'jumlah_stok'   => ['required', 'integer', 'min:0'],
             'status'        => ['nullable'],
         ], [
-            // Kustomisasi pesan error bahasa Indonesia
             'id_produk.unique' => 'ID Produk sudah terdaftar di sistem, gunakan ID yang lain.',
         ]);
         
@@ -75,7 +71,6 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        // Menambahkan pengecualian unik saat update agar tidak bentrok dengan ID dirinya sendiri
         $data = $request->validate([
             'id_produk'     => ['required', 'string', 'max:255', 'unique:products,id_produk,' . $product->id],
             'nama_produk'   => ['required', 'string', 'max:255'],

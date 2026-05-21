@@ -30,7 +30,6 @@ class OfflineTransactionController extends Controller
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.qty'        => ['required', 'integer', 'min:1'],
         ], [
-            // Custom pesan error khusus untuk notes
             'notes.required'     => 'Wajib Isi nama Pembeli',
         ]);
 
@@ -38,8 +37,6 @@ class OfflineTransactionController extends Controller
             DB::transaction(function () use ($request) {
                 $items       = $request->items;
                 $totalAmount = 0;
-
-                // Memaksa sistem menggunakan tanggal hari ini demi keamanan data backend
                 $transaction = OfflineTransaction::create([
                     'transaction_date' => date('Y-m-d'),
                     'notes'            => $request->notes,
@@ -94,7 +91,6 @@ class OfflineTransactionController extends Controller
 
         try {
             DB::transaction(function () use ($request, $offlineTransaction) {
-                // Kembalikan stok lama
                 foreach ($offlineTransaction->items as $oldItem) {
                     DB::table('products')->where('id', $oldItem->product_id)->increment('jumlah_stok', $oldItem->qty);
                 }

@@ -23,14 +23,12 @@ class OfflineTransactionItemObserver
         }
 
         if ($difference > 0) {
-            // Qty bertambah, kurangi stok
             if ($product->{'jumlah stok'} < $difference) {
                 throw new \Exception("Stok produk {$product->{'nama_produk'}} tidak cukup.");
             }
             $product->{'jumlah stok'} -= $difference;
         } else {
-            // Qty berkurang, kembalikan stok
-            $product->{'jumlah stok'} -= $difference; // difference negative, so add
+            $product->{'jumlah stok'} -= $difference; 
         }
 
         $product->save();

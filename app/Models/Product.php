@@ -32,7 +32,6 @@ class Product extends Model
         return $this->hasMany(OfflineTransactionItem::class);
     }
 
-    // Accessor untuk stock
     public function getStockAttribute()
     {
         return $this->{'jumlah stok'};

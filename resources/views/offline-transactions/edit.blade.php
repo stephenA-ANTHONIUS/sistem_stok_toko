@@ -61,7 +61,7 @@
                                        min="1" required placeholder="Qty"
                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
-                            <button type="button" @click="removeItem(index)" x-show="items.length > 1"
+                            <button type="button" @click="removeItem(index)" x-show="items.length > 1 || item.product_id !== ''"
                                     class="text-red-400 hover:text-red-600 transition p-1">
                                 <i class="fa-solid fa-trash text-sm"></i>
                             </button>
@@ -87,7 +87,13 @@ function editForm(initialItems) {
     return {
         items: initialItems.length ? initialItems : [{ product_id: '', qty: 1 }],
         addItem() { this.items.push({ product_id: '', qty: 1 }); },
-        removeItem(index) { if (this.items.length > 1) this.items.splice(index, 1); }
+        removeItem(index) {
+            if (this.items.length > 1) {
+                this.items.splice(index, 1);
+            } else {
+                this.items = [{ product_id: '', qty: 1 }];
+            }
+        }
     }
 }
 </script>

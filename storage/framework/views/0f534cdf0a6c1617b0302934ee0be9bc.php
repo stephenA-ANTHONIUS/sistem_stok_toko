@@ -1,39 +1,53 @@
-@extends('layouts.app')
-@section('title', 'Tambah Transaksi Offline')
-@section('page-title', 'Tambah Transaksi Offline')
+<?php $__env->startSection('title', 'Tambah Transaksi Offline'); ?>
+<?php $__env->startSection('page-title', 'Tambah Transaksi Offline'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="max-w-3xl" x-data="transactionForm()">
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6">
         <h2 class="text-base font-bold text-gray-800">Form Tambah Transaksi Offline</h2>
 
-        @if(session('error'))
+        <?php if(session('error')): ?>
         <div class="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
-            <i class="fa-solid fa-circle-xmark"></i> {{ session('error') }}
-        </div>
-        @endif
-        
-        {{-- Menghapus daftar error global list atas agar tampilan lebih rapi dan fokus ke pesan error per kolom --}}
+            <i class="fa-solid fa-circle-xmark"></i> <?php echo e(session('error')); ?>
 
-        <form method="POST" action="{{ route('offline-transactions.store') }}" class="space-y-5">
-            @csrf
+        </div>
+        <?php endif; ?>
+        
+        
+
+        <form method="POST" action="<?php echo e(route('offline-transactions.store')); ?>" class="space-y-5">
+            <?php echo csrf_field(); ?>
             <div class="grid sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Transaksi <span class="text-red-500">*</span></label>
-                    {{-- Diubah menjadi otomatis hari ini, readonly, dan berlatar abu-abu tanda terkunci --}}
-                    <input type="date" name="transaction_date" value="{{ date('Y-m-d') }}" readonly required
+                    
+                    <input type="date" name="transaction_date" value="<?php echo e(date('Y-m-d')); ?>" readonly required
                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Catatan <span class="text-red-500">*</span></label>
-                    {{-- Menambahkan validasi required, deteksi error, dan placeholder baru --}}
-                    <input type="text" name="notes" value="{{ old('notes') }}" required
-                           class="w-full px-4 py-2.5 border @error('notes') border-red-500 focus:ring-red-500 @else border-gray-300 focus:ring-blue-500 @enderror rounded-xl text-sm focus:outline-none focus:ring-2"
+                    
+                    <input type="text" name="notes" value="<?php echo e(old('notes')); ?>" required
+                           class="w-full px-4 py-2.5 border <?php $__errorArgs = ['notes'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-500 focus:ring-red-500 <?php else: ?> border-gray-300 focus:ring-blue-500 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?> rounded-xl text-sm focus:outline-none focus:ring-2"
                            placeholder="Wajib Isi nama Pembeli">
-                    {{-- Komponen pesan error kecil di bawah kolom input --}}
-                    @error('notes')
-                    <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
-                    @enderror
+                    
+                    <?php $__errorArgs = ['notes'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <p class="text-red-500 text-xs mt-1 font-medium"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
             </div>
 
@@ -83,7 +97,7 @@
                 <button type="submit" class="px-6 py-2.5 bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold rounded-xl transition">
                     <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Transaksi
                 </button>
-                <a href="{{ route('offline-transactions.index') }}" class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-xl transition">
+                <a href="<?php echo e(route('offline-transactions.index')); ?>" class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-xl transition">
                     Batal
                 </a>
             </div>
@@ -91,7 +105,7 @@
     </div>
 </div>
 
-@php
+<?php
     $productOptions = $products->map(function ($product) {
         return [
             'id' => $product->id,
@@ -100,14 +114,14 @@
             'jumlah_stok' => $product->jumlah_stok,
         ];
     })->values();
-@endphp
+?>
 
 <script>
 function transactionForm() {
     return {
         searchTerm: '',
         items: [{ product_id: '', qty: 1 }],
-        products: @json($productOptions),
+        products: <?php echo json_encode($productOptions, 15, 512) ?>,
         get filteredProducts() {
             if (!this.searchTerm) {
                 return this.products;
@@ -125,4 +139,5 @@ function transactionForm() {
     }
 }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Project_KP\sistem_stok_toko\resources\views/offline-transactions/create.blade.php ENDPATH**/ ?>

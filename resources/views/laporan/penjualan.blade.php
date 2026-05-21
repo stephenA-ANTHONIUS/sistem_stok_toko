@@ -11,7 +11,6 @@
         <p class="text-sm text-gray-500 mb-5">Total keseluruhan omset offline, online, dan gabungan.</p>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             @php
-                // FUNGSI SUDAH DIPERBAIKI: Mengubah format penyingkat K/J menjadi nominal penuh '000'
                 function fmtRp($n) {
                     $n = (int)$n;
                     return 'Rp ' . number_format($n, 0, ',', '.');

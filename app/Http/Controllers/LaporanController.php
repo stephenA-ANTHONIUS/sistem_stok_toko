@@ -14,7 +14,6 @@ class LaporanController extends Controller
 {
     public function penjualan()
     {
-        // Pengamanan Khusus: Hanya boleh diakses Admin & Pemilik
         if (!in_array(auth()->user()->role, ['admin', 'pemilik'])) {
             abort(403, 'Akses ditolak.');
         }
@@ -34,7 +33,6 @@ class LaporanController extends Controller
             collect($l->items)->sum(fn ($i) => (int) ($i['qty'] ?? 0))
         );
 
-        // Chart data: 7 hari terakhir
         $start        = now()->subDays(6)->startOfDay();
         $transactions = OfflineTransaction::whereBetween('transaction_date', [$start, now()])->get();
         $labels       = [];
@@ -62,14 +60,11 @@ class LaporanController extends Controller
 
     public function stok()
     {
-        // Pengamanan Khusus: Hanya boleh diakses Admin & Pemilik
         if (!in_array(auth()->user()->role, ['admin', 'pemilik'])) {
             abort(403, 'Akses ditolak.');
         }
 
         $products = Product::orderBy('nama_produk')->get();
-
-        // Chart stok masuk 7 hari
         $start   = now()->subDays(6)->startOfDay();
         $entries = StockEntry::with('items')->whereBetween('entry_date', [$start, now()])->get();
         $stokLabels  = [];
@@ -104,7 +99,6 @@ class LaporanController extends Controller
 
     public function riwayat()
     {
-        // Pengamanan Khusus: Hanya Admin (Pemilik tidak bisa akses)
         if (auth()->user()->role !== 'admin') {
             abort(403, 'Akses ditolak. Halaman ini hanya untuk Admin.');
         }
