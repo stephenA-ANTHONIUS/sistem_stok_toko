@@ -1,24 +1,31 @@
-<?php
-
-// Daftar direktori yang dibutuhkan Laravel untuk cache/view
-$tmpDirectories = [
-    '/tmp/storage/framework/views',
-    '/tmp/storage/framework/cache/data',
-    '/tmp/storage/framework/sessions',
-    '/tmp/storage/logs',
-];
-
-// Buat direktori jika belum ada
-foreach ($tmpDirectories as $dir) {
-    if (!is_dir($dir)) {
-        mkdir($dir, 0777, true);
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "api/index.php",
+            "use": "vercel-php@0.7.2"
+        },
+        {
+            "src": "public/**",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot))",
+            "dest": "/public/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
+    ],
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "false",
+        "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
+        "CACHE_STORE": "array",
+        "SESSION_DRIVER": "cookie",
+        "LOG_CHANNEL": "stderr"
     }
 }
-
-// Paksa Laravel menggunakan direktori /tmp
-$_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
-$_ENV['SESSION_DRIVER'] = 'array'; // Atau 'cookie'
-$_ENV['CACHE_STORE'] = 'array';
-
-// Jalankan file public/index.php bawaan Laravel
-require __DIR__ . '/../public/index.php';
