@@ -1,17 +1,5 @@
 <?php
 
-// Tangkap error PHP sebelum Laravel handle
-set_exception_handler(function($e) {
-    http_response_code(500);
-    echo '<pre style="color:red;font-size:14px;">';
-    echo '<b>REAL ERROR:</b> ' . get_class($e) . "\n";
-    echo '<b>Message:</b> ' . $e->getMessage() . "\n";
-    echo '<b>File:</b> ' . $e->getFile() . ':' . $e->getLine() . "\n";
-    echo '<b>Trace:</b>' . "\n" . $e->getTraceAsString();
-    echo '</pre>';
-    exit(1);
-});
-
 $tmpDirectories = [
     '/tmp/storage/framework/views',
     '/tmp/storage/framework/cache/data',
@@ -33,5 +21,16 @@ putenv('LOG_CHANNEL=stderr');
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
 $_ENV['SESSION_DRIVER'] = 'cookie';
 $_ENV['CACHE_STORE'] = 'array';
+
+// Tangkap error fatal sebelum Laravel boot
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error) {
+        file_put_contents('/tmp/last_error.txt', json_encode($error, JSON_PRETTY_PRINT));
+    }
+});
+
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
 
 require __DIR__ . '/../public/index.php';

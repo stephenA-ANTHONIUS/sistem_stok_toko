@@ -61,8 +61,10 @@
                                        min="1" required placeholder="Qty"
                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
-                            <button type="button" @click="removeItem(index)" x-show="items.length > 1 || item.product_id !== ''"
-                                    class="text-red-400 hover:text-red-600 transition p-1">
+                            <button type="button" @click="removeItem(index)"
+                                    :class="items.length === 1 && item.product_id === '' ? 'text-gray-400 cursor-not-allowed' : 'text-red-400 hover:text-red-600'"
+                                    :disabled="items.length === 1 && item.product_id === ''"
+                                    class="transition p-1">
                                 <i class="fa-solid fa-trash text-sm"></i>
                             </button>
                         </div>
