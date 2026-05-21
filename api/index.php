@@ -1,22 +1,24 @@
 <?php
 
-// Pastikan folder ini ada di Vercel untuk menyimpan cache
+// Daftar direktori yang dibutuhkan Laravel untuk cache/view
 $tmpDirectories = [
     '/tmp/storage/framework/views',
-    '/tmp/storage/framework/cache',
+    '/tmp/storage/framework/cache/data',
     '/tmp/storage/framework/sessions',
+    '/tmp/storage/logs',
 ];
 
+// Buat direktori jika belum ada
 foreach ($tmpDirectories as $dir) {
     if (!is_dir($dir)) {
-        mkdir($dir, 0755, true);
+        mkdir($dir, 0777, true);
     }
 }
 
-// Arahkan config Laravel ke folder /tmp
+// Paksa Laravel menggunakan direktori /tmp
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
-$_ENV['SESSION_DRIVER'] = 'cookie'; // Jangan pakai file untuk session
-$_ENV['CACHE_STORE'] = 'array'; // Pakai array untuk cache (atau redis jika ada)
+$_ENV['SESSION_DRIVER'] = 'array'; // Atau 'cookie'
+$_ENV['CACHE_STORE'] = 'array';
 
-// Lanjutkan eksekusi file public/index.php bawaan Laravel
+// Jalankan file public/index.php bawaan Laravel
 require __DIR__ . '/../public/index.php';
