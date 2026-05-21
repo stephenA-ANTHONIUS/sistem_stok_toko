@@ -2,12 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\ServiceProvider;
 use App\Models\OfflineTransactionItem;
 use App\Models\StockEntryItem;
 use App\Observers\OfflineTransactionItemObserver;
-use App\Observers\StockEntryItemObserver;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useTailwind();
         OfflineTransactionItem::observe(OfflineTransactionItemObserver::class);
-        StockEntryItem::observe(StockEntryItem::class);
+        // StockEntryItem::observe(StockEntryItemObserver::class);
         config(['view.compiled' => '/tmp/storage/framework/views']);
     }
 }
