@@ -1,0 +1,23 @@
+{
+  "name": "sistem_stok_toko",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stephenA-ANTHONIUS/sistem_stok_toko.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stephenA-ANTHONIUS/sistem_stok_toko/issues"
+  },
+  "homepage": "https://github.com/stephenA-ANTHONIUS/sistem_stok_toko#readme",
+  "description": ""
+}
