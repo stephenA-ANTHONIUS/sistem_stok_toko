@@ -44,10 +44,10 @@
                                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs hover:bg-blue-100 transition">
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </a>
-                                <form method="POST" action="{{ route('offline-transactions.destroy', $tx) }}"
-                                      onsubmit="return confirm('Yakin ingin menghapus transaksi ini?')">
+                                <form method="POST" action="{{ route('offline-transactions.destroy', $tx) }}" @submit.prevent>
                                     @csrf @method('DELETE')
-                                    <button type="submit"
+                                    <button type="button"
+                                            @click="openDeleteModal($el.closest('form'), 'Yakin ingin menghapus transaksi ini?')"
                                             class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-700 rounded-lg text-xs hover:bg-red-100 transition">
                                         <i class="fa-solid fa-trash"></i> Hapus
                                     </button>

@@ -53,10 +53,10 @@
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </a>
                                 @if($user->id !== auth()->id())
-                                <form method="POST" action="{{ route('users.destroy', $user) }}"
-                                      onsubmit="return confirm('Yakin ingin menghapus user {{ $user->name }}?')">
+                                <form method="POST" action="{{ route('users.destroy', $user) }}" @submit.prevent>
                                     @csrf @method('DELETE')
-                                    <button type="submit"
+                                    <button type="button"
+                                            @click="openDeleteModal($el.closest('form'), 'Yakin ingin menghapus user {{ $user->name }}?')"
                                             class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-700 rounded-lg text-xs hover:bg-red-100 transition">
                                         <i class="fa-solid fa-trash"></i> Hapus
                                     </button>
