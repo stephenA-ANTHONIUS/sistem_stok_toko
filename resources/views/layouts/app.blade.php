@@ -14,7 +14,82 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
-<div class="flex h-screen overflow-hidden" x-data="{ sidebarOpen: false }">
+<div class="flex h-screen overflow-hidden"
+     x-data="{
+        sidebarOpen: false,
+
+        /* ── Modal Konfirmasi Hapus ── */
+        deleteModal: false,
+        deleteMessage: 'Yakin ingin menghapus data ini?',
+        deleteForm: null,
+
+        openDeleteModal(formEl, message) {
+            this.deleteForm    = formEl;
+            this.deleteMessage = message || 'Yakin ingin menghapus data ini?';
+            this.deleteModal   = true;
+        },
+        submitDelete() {
+            if (this.deleteForm) this.deleteForm.submit();
+            this.deleteModal = false;
+        }
+     }">
+
+    {{-- ═══════════════════════════════════════════════
+         MODAL KONFIRMASI HAPUS (global, tengah layar)
+    ════════════════════════════════════════════════ --}}
+    <div x-show="deleteModal"
+         x-cloak
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+         @keydown.escape.window="deleteModal = false">
+
+        {{-- Backdrop --}}
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+             @click="deleteModal = false"></div>
+
+        {{-- Dialog --}}
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-5"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95">
+
+            {{-- Icon --}}
+            <div class="flex justify-center">
+                <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-trash-can text-red-500 text-2xl"></i>
+                </div>
+            </div>
+
+            {{-- Teks --}}
+            <div class="text-center">
+                <h3 class="text-base font-bold text-gray-800 mb-1">Konfirmasi Hapus</h3>
+                <p class="text-sm text-gray-500" x-text="deleteMessage"></p>
+            </div>
+
+            {{-- Tombol --}}
+            <div class="flex gap-3">
+                <button type="button"
+                        @click="deleteModal = false"
+                        class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-xl transition">
+                    Batal
+                </button>
+                <button type="button"
+                        @click="submitDelete()"
+                        class="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-xl transition">
+                    <i class="fa-solid fa-trash-can mr-1"></i> Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+    {{-- ═══════════════════════════════════════════════ --}}
 
     {{-- Sidebar --}}
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
@@ -31,15 +106,12 @@
         </div>
 
         <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto text-sm">
-
-            {{-- Dashboard: Bisa dilihat Admin & Pemilik --}}
             <p class="px-3 py-1 text-blue-400 text-xs font-semibold uppercase tracking-wider">Dashboard</p>
             <a href="{{ route('dashboard') }}"
                class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition {{ request()->routeIs('dashboard') ? 'bg-white/15 font-semibold' : '' }}">
                 <i class="fa-solid fa-house w-4 text-center"></i> Dashboard
             </a>
 
-            {{-- Hak Akses Khusus Admin (Master Data & Transaksi) --}}
             @if(auth()->user()->role === 'admin')
             <p class="px-3 pt-3 pb-1 text-blue-400 text-xs font-semibold uppercase tracking-wider">Master Data</p>
             <a href="{{ route('products.index') }}"
@@ -62,10 +134,7 @@
             </a>
             @endif
 
-            {{-- Menu Laporan: Header ini tampil untuk Admin & Pemilik --}}
             <p class="px-3 pt-3 pb-1 text-blue-400 text-xs font-semibold uppercase tracking-wider">Laporan</p>
-            
-            {{-- Laporan Penjualan & Laporan Stok: Bisa dilihat Admin & Pemilik --}}
             <a href="{{ route('laporan.penjualan') }}"
                class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition {{ request()->routeIs('laporan.penjualan') ? 'bg-white/15 font-semibold' : '' }}">
                 <i class="fa-solid fa-chart-bar w-4 text-center"></i> Laporan Penjualan
@@ -74,8 +143,7 @@
                class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition {{ request()->routeIs('laporan.stok') ? 'bg-white/15 font-semibold' : '' }}">
                 <i class="fa-solid fa-chart-line w-4 text-center"></i> Laporan Stok
             </a>
-            
-            {{-- Riwayat Transaksi: Hanya bisa dilihat oleh Admin --}}
+
             @if(auth()->user()->role === 'admin')
             <a href="{{ route('laporan.riwayat') }}"
                class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition {{ request()->routeIs('laporan.riwayat') ? 'bg-white/15 font-semibold' : '' }}">
@@ -83,7 +151,6 @@
             </a>
             @endif
 
-            {{-- Hak Akses Khusus Pemilik (Manajemen User) --}}
             @if(auth()->user()->role === 'pemilik')
             <p class="px-3 pt-3 pb-1 text-blue-400 text-xs font-semibold uppercase tracking-wider">Pengaturan</p>
             <a href="{{ route('users.index') }}"
@@ -118,7 +185,6 @@
 
     {{-- Main content --}}
     <div class="flex-1 flex flex-col overflow-hidden">
-        {{-- Topbar --}}
         <header class="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-sm">
             <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-500 hover:text-gray-700">
                 <i class="fa-solid fa-bars text-xl"></i>
@@ -130,7 +196,6 @@
             </div>
         </header>
 
-        {{-- Page content --}}
         <main class="flex-1 overflow-y-auto p-6">
 
             @if(session('success'))
