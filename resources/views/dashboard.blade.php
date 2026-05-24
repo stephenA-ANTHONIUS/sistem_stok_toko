@@ -4,6 +4,20 @@
 
 @section('content')
 <div class="space-y-6">
+    {{-- Greeting Widget --}}
+    <div class="mb-6 bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl px-6 py-5 flex items-center justify-between shadow-sm">
+        <div>
+            <p class="text-blue-200 text-sm mb-1">{{ now()->translatedFormat('l, d F Y') }}</p>
+            <h2 class="text-white text-xl font-bold">
+                Hai, Ketemu Lagi
+                <span class="text-yellow-300">{{ auth()->user()->name }} 👋</span>
+            </h2>
+            <p class="text-blue-200 text-sm mt-1">Selamat datang kembali di Sistem Stok Toko.</p>
+        </div>
+        <div class="hidden md:flex w-14 h-14 bg-white/20 rounded-full items-center justify-center text-2xl">
+            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+        </div>
+    </div>
 
     {{-- Omset Cards --}}
     <section class="rounded-2xl bg-white shadow-sm border border-gray-100 p-6">
