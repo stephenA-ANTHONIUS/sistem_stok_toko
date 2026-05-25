@@ -3,7 +3,11 @@
 @section('page-title', 'Tambah Transaksi Offline')
 
 @section('content')
-<div class="max-w-3xl" x-data="transactionForm()">
+<div class="max-w-3xl" x-data="transactionForm({{ $products->map(fn($p) => [
+    'id'          => $p->id,
+    'nama_produk' => $p->nama_produk,
+    'jumlah_stok' => $p->jumlah_stok,
+])->values() }})">
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6">
         <h2 class="text-base font-bold text-gray-800">Form Tambah Transaksi Offline</h2>
 
@@ -41,7 +45,7 @@
             {{-- Daftar Produk --}}
             <div>
                 <h3 class="text-sm font-semibold text-gray-700 mb-1">Daftar Produk</h3>
-                <p class="text-xs text-gray-500 mb-3">Cari dan klik produk untuk menambahkan ke transaksi.</p>
+                <p class="text-xs text-gray-500 mb-3">Cari dan klik tombol tambah untuk memasukkan ke transaksi.</p>
 
                 {{-- Search dengan dropdown hasil --}}
                 <div class="relative mb-4">
@@ -58,22 +62,30 @@
                         <i class="fa-solid fa-spinner fa-spin text-gray-400"></i>
                     </div>
 
-                    {{-- Hasil pencarian --}}
+                    {{-- Hasil pencarian (Diperbarui dengan Tombol Tambah & Scroll) --}}
                     <div x-show="showResults && searchResults.length > 0"
                          x-transition
                          @click.outside="closeSearch"
-                         class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                         class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-64">
                         <template x-for="product in searchResults" :key="product.id">
-                            <button type="button"
-                                    @click="addProduct(product)"
-                                    class="w-full text-left px-4 py-3 text-sm hover:bg-blue-50 flex items-center justify-between border-b border-gray-100 last:border-0 transition">
-                                <span class="font-medium text-gray-800" x-text="product.nama_produk"></span>
-                                <span class="text-xs text-gray-500">
-                                    Stok: <span x-text="product.jumlah_stok"
-                                                :class="product.jumlah_stok < 5 ? 'text-red-500 font-bold' : 'text-green-600 font-semibold'">
+                            <div class="px-4 py-3 text-sm hover:bg-slate-50 flex items-center justify-between border-b border-gray-100 last:border-0 transition">
+                                {{-- Info Produk (Kiri) --}}
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-gray-800" x-text="product.nama_produk"></span>
+                                    <span class="text-xs text-gray-500 mt-1">
+                                        Stok: <span x-text="product.jumlah_stok"
+                                                    :class="product.jumlah_stok < 5 ? 'text-red-500 font-bold' : 'text-green-600 font-semibold'">
+                                        </span>
                                     </span>
-                                </span>
-                            </button>
+                                </div>
+                                
+                                {{-- Tombol Tambah (Kanan) --}}
+                                <button type="button"
+                                        @click="addProduct(product)"
+                                        class="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-600 hover:text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+                                    <i class="fa-solid fa-plus"></i> Tambah
+                                </button>
+                            </div>
                         </template>
                     </div>
 
@@ -150,7 +162,8 @@
 </div>
 
 <script>
-function transactionForm() {
+// Fungsi menerima parameter data produk dari x-data HTML
+function transactionForm(initialProducts) {
     return {
         searchTerm:    '',
         searchResults: [],
@@ -159,12 +172,8 @@ function transactionForm() {
         items:         [],
         debounceTimer: null,
 
-        // Semua produk sebagai fallback lokal (tanpa perlu API)
-        allProducts: @json($products->map(fn($p) => [
-            'id'          => $p->id,
-            'nama_produk' => $p->nama_produk,
-            'jumlah_stok' => $p->jumlah_stok,
-        ])->values()),
+        // Assign data dari parameter
+        allProducts: initialProducts,
 
         onSearch() {
             clearTimeout(this.debounceTimer);
