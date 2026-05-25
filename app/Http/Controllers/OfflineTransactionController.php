@@ -20,12 +20,25 @@ class OfflineTransactionController extends Controller
         $products = Product::where('status', true)->orderBy('nama_produk')->get();
         return view('offline-transactions.create', compact('products'));
     }
+    public function searchProducts(Request $request)
+    {
+    $keyword = $request->get('q', '');
+
+    $products = Product::query()
+    ->where('nama_produk', 'like', "%{$keyword}%")
+    ->where('jumlah_stok', '>', 0)
+    ->select('id', 'nama_produk', 'harga', 'jumlah_stok')
+    ->limit(10)
+    ->get();
+
+    return response()->json($products);
+    }
 
     public function store(Request $request)
     {
         $request->validate([
             'transaction_date'   => ['required', 'date'],
-            'notes'              => ['required', 'string', 'max:255'], // Wajib diisi
+            'notes'              => ['required', 'string', 'max:255'],
             'items'              => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.qty'        => ['required', 'integer', 'min:1'],
@@ -81,7 +94,7 @@ class OfflineTransactionController extends Controller
     {
         $request->validate([
             'transaction_date'   => ['required', 'date'],
-            'notes'              => ['required', 'string', 'max:255'], // Wajib diisi saat edit
+            'notes'              => ['required', 'string', 'max:255'],
             'items'              => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.qty'        => ['required', 'integer', 'min:1'],

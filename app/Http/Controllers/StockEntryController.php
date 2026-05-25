@@ -21,6 +21,20 @@ class StockEntryController extends Controller
         return view('stock-entries.create', compact('products'));
     }
 
+    public function searchProducts(Request $request)
+    {
+    $keyword = $request->get('q', '');
+
+    $products = Product::query()
+    ->where('nama_produk', 'like', "%{$keyword}%")
+    ->where('status', true)
+    ->select('id', 'nama_produk', 'jumlah_stok')
+    ->limit(10)
+    ->get();
+
+    return response()->json($products);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

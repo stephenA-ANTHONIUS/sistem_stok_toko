@@ -22,7 +22,6 @@
         deleteModal: false,
         deleteMessage: 'Yakin ingin menghapus data ini?',
         deleteForm: null,
-
         openDeleteModal(formEl, message) {
             this.deleteForm    = formEl;
             this.deleteMessage = message || 'Yakin ingin menghapus data ini?';
@@ -31,11 +30,16 @@
         submitDelete() {
             if (this.deleteForm) this.deleteForm.submit();
             this.deleteModal = false;
-        }
+        },
+
+        /* ── Modal Konfirmasi Logout ── */
+        logoutModal: false,
+        openLogoutModal() { this.logoutModal = true; },
+        submitLogout()    { this.$refs.logoutForm.submit(); }
      }">
 
     {{-- ═══════════════════════════════════════════════
-         MODAL KONFIRMASI HAPUS (global, tengah layar)
+         MODAL KONFIRMASI HAPUS
     ════════════════════════════════════════════════ --}}
     <div x-show="deleteModal"
          x-cloak
@@ -48,11 +52,9 @@
          class="fixed inset-0 z-[999] flex items-center justify-center p-4"
          @keydown.escape.window="deleteModal = false">
 
-        {{-- Backdrop --}}
         <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"
              @click="deleteModal = false"></div>
 
-        {{-- Dialog --}}
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-5"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 scale-95"
@@ -61,20 +63,17 @@
              x-transition:leave-start="opacity-100 scale-100"
              x-transition:leave-end="opacity-0 scale-95">
 
-            {{-- Icon --}}
             <div class="flex justify-center">
                 <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center">
                     <i class="fa-solid fa-trash-can text-red-500 text-2xl"></i>
                 </div>
             </div>
 
-            {{-- Teks --}}
             <div class="text-center">
                 <h3 class="text-base font-bold text-gray-800 mb-1">Konfirmasi Hapus</h3>
                 <p class="text-sm text-gray-500" x-text="deleteMessage"></p>
             </div>
 
-            {{-- Tombol --}}
             <div class="flex gap-3">
                 <button type="button"
                         @click="deleteModal = false"
@@ -89,9 +88,61 @@
             </div>
         </div>
     </div>
-    {{-- ═══════════════════════════════════════════════ --}}
 
-    {{-- Sidebar --}}
+    {{-- ═══════════════════════════════════════════════
+         MODAL KONFIRMASI LOGOUT
+    ════════════════════════════════════════════════ --}}
+    <div x-show="logoutModal"
+         x-cloak
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+         @keydown.escape.window="logoutModal = false">
+
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+             @click="logoutModal = false"></div>
+
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-5"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95">
+
+            <div class="flex justify-center">
+                <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-right-from-bracket text-blue-600 text-2xl"></i>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <h3 class="text-base font-bold text-gray-800 mb-1">Konfirmasi Keluar</h3>
+                <p class="text-sm text-gray-500">Yakin ingin keluar dari sesi ini?</p>
+            </div>
+
+            <div class="flex gap-3">
+                <button type="button"
+                        @click="logoutModal = false"
+                        class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-xl transition">
+                    Batal
+                </button>
+                <button type="button"
+                        @click="submitLogout()"
+                        class="flex-1 px-4 py-2.5 bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold rounded-xl transition">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Keluar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- ═══════════════════════════════════════════════
+         SIDEBAR
+    ════════════════════════════════════════════════ --}}
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
            class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-800 to-blue-900 text-white flex flex-col transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:flex">
 
@@ -106,6 +157,7 @@
         </div>
 
         <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto text-sm">
+
             <p class="px-3 py-1 text-blue-400 text-xs font-semibold uppercase tracking-wider">Dashboard</p>
             <a href="{{ route('dashboard') }}"
                class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition {{ request()->routeIs('dashboard') ? 'bg-white/15 font-semibold' : '' }}">
@@ -160,6 +212,7 @@
             @endif
         </nav>
 
+        {{-- User info & tombol keluar --}}
         <div class="px-4 py-4 border-t border-blue-700">
             <div class="flex items-center gap-3 mb-3">
                 <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-xs font-bold">
@@ -170,9 +223,13 @@
                     <p class="text-blue-300 text-xs capitalize">{{ auth()->user()->role }}</p>
                 </div>
             </div>
-            <form method="POST" action="{{ route('logout') }}">
+
+            {{-- Form logout (submit via Alpine) --}}
+            <form method="POST" action="{{ route('logout') }}" x-ref="logoutForm">
                 @csrf
-                <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-xs rounded-lg bg-blue-700 hover:bg-blue-600 transition">
+                <button type="button"
+                        @click="openLogoutModal()"
+                        class="w-full flex items-center gap-2 px-3 py-2 text-xs rounded-lg bg-blue-700 hover:bg-blue-600 transition">
                     <i class="fa-solid fa-right-from-bracket"></i> Keluar
                 </button>
             </form>
@@ -183,8 +240,12 @@
     <div x-show="sidebarOpen" @click="sidebarOpen = false" x-cloak
          class="fixed inset-0 z-40 bg-black/50 lg:hidden"></div>
 
-    {{-- Main content --}}
+    {{-- ═══════════════════════════════════════════════
+         MAIN CONTENT
+    ════════════════════════════════════════════════ --}}
     <div class="flex-1 flex flex-col overflow-hidden">
+
+        {{-- Topbar --}}
         <header class="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-sm">
             <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-500 hover:text-gray-700">
                 <i class="fa-solid fa-bars text-xl"></i>
@@ -196,6 +257,7 @@
             </div>
         </header>
 
+        {{-- Page content --}}
         <main class="flex-1 overflow-y-auto p-6">
 
             @if(session('success'))
@@ -215,6 +277,7 @@
             @yield('content')
         </main>
     </div>
+
 </div>
 </body>
 </html>
