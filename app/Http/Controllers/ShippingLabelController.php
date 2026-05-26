@@ -127,17 +127,18 @@ class ShippingLabelController extends Controller
             ->with('success', 'Resi berhasil disimpan dan stok telah diperbarui.');
     }
 
+    /**
+     * FUNGSI EDIT YANG SUDAH DIPERBAIKI
+     */
     public function edit(ShippingLabel $shippingLabel)
     {
         $products = Product::orderBy('nama_produk', 'asc')->get();
 
-        $mappedItems = collect($shippingLabel->items ?? [])->map(function ($item) use ($products) {
-            $scanName = trim($item['produk'] ?? '');
-            $matchedProduct = $this->findBestMatchingProduct($scanName, $products);
-
+        // PERBAIKAN: Langsung ambil data produk asli dari DB resi, tidak perlu di-fuzzy match lagi!
+        $mappedItems = collect($shippingLabel->items ?? [])->map(function ($item) {
             return [
-                'produk' => $matchedProduct ? $matchedProduct->nama_produk : $scanName,
-                'qty'    => $item['qty'] ?? 1,
+                'produk' => trim($item['produk'] ?? ''),
+                'qty'    => isset($item['qty']) ? (int) $item['qty'] : 1,
             ];
         })->toArray();
 
