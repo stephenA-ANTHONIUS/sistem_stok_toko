@@ -55,10 +55,6 @@
                         <td class="px-4 py-3 text-gray-500 text-xs max-w-xs truncate">{{ \Illuminate\Support\Str::limit($label->raw_text, 60) }}</td>
                         <td class="px-4 py-3 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <a href="{{ route('shipping-labels.edit', $label) }}"
-                                   class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs hover:bg-blue-100 transition">
-                                    <i class="fa-solid fa-pen-to-square"></i> Edit
-                                </a>
                                 <form method="POST" action="{{ route('shipping-labels.destroy', $label) }}" @submit.prevent>
                                     @csrf @method('DELETE')
                                     <button type="button"
