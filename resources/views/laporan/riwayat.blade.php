@@ -5,7 +5,6 @@
 @section('content')
 <div class="space-y-6">
 
-    {{-- Ringkasan --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
             <div class="flex items-center gap-2 mb-2">
@@ -39,7 +38,6 @@
         </div>
     </div>
 
-    {{-- Tabel Offline Terbaru --}}
     <section class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
         <h2 class="text-base font-bold text-gray-800 mb-4">20 Transaksi Offline Terbaru</h2>
         <div class="overflow-x-auto">
@@ -70,7 +68,6 @@
         </div>
     </section>
 
-    {{-- Tabel Resi Online Terbaru --}}
     <section class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
         <h2 class="text-base font-bold text-gray-800 mb-4">20 Resi Online Terbaru</h2>
         <div class="overflow-x-auto">

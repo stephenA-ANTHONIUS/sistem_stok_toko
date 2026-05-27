@@ -20,7 +20,6 @@
         <form method="POST" action="{{ route('offline-transactions.store') }}" class="space-y-5">
             @csrf
 
-            {{-- Tanggal & Catatan --}}
             <div class="grid sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -42,12 +41,10 @@
                 </div>
             </div>
 
-            {{-- Daftar Produk --}}
             <div>
                 <h3 class="text-sm font-semibold text-gray-700 mb-1">Daftar Produk</h3>
                 <p class="text-xs text-gray-500 mb-3">Cari dan klik tombol tambah untuk memasukkan ke transaksi.</p>
 
-                {{-- Search dengan dropdown hasil --}}
                 <div class="relative mb-4">
                     <input type="text"
                            x-model="searchTerm"
@@ -57,19 +54,16 @@
                            autocomplete="off"
                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
 
-                    {{-- Spinner --}}
                     <div x-show="loading" class="absolute right-3 top-2.5">
                         <i class="fa-solid fa-spinner fa-spin text-gray-400"></i>
                     </div>
 
-                    {{-- Hasil pencarian (Diperbarui dengan Tombol Tambah & Scroll) --}}
                     <div x-show="showResults && searchResults.length > 0"
                          x-transition
                          @click.outside="closeSearch"
                          class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-64">
                         <template x-for="product in searchResults" :key="product.id">
                             <div class="px-4 py-3 text-sm hover:bg-slate-50 flex items-center justify-between border-b border-gray-100 last:border-0 transition">
-                                {{-- Info Produk (Kiri) --}}
                                 <div class="flex flex-col">
                                     <span class="font-medium text-gray-800" x-text="product.nama_produk"></span>
                                     <span class="text-xs text-gray-500 mt-1">
@@ -79,7 +73,6 @@
                                     </span>
                                 </div>
                                 
-                                {{-- Tombol Tambah (Kanan) --}}
                                 <button type="button"
                                         @click="addProduct(product)"
                                         class="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-600 hover:text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
@@ -89,7 +82,6 @@
                         </template>
                     </div>
 
-                    {{-- Tidak ditemukan --}}
                     <div x-show="showResults && searchResults.length === 0 && searchTerm.length >= 2 && !loading"
                          x-transition
                          class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg px-4 py-3 text-sm text-gray-500">
@@ -97,15 +89,12 @@
                     </div>
                 </div>
 
-                {{-- Daftar item yang sudah dipilih --}}
                 <div x-show="items.length > 0" class="space-y-2">
                     <template x-for="(item, index) in items" :key="index">
                         <div class="flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3">
 
-                            {{-- Hidden input product_id untuk submit --}}
                             <input type="hidden" :name="'items[' + index + '][product_id]'" :value="item.product_id">
 
-                            {{-- Nama & info stok --}}
                             <div class="flex-1">
                                 <p class="text-sm font-medium text-gray-800" x-text="item.nama_produk"></p>
                                 <p class="text-xs text-gray-400">
@@ -116,7 +105,6 @@
                                 </p>
                             </div>
 
-                            {{-- Input Qty --}}
                             <div class="w-28">
                                 <input type="number"
                                        :name="'items[' + index + '][qty]'"
@@ -128,7 +116,6 @@
                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-center">
                             </div>
 
-                            {{-- Hapus --}}
                             <button type="button" @click="removeItem(index)"
                                     class="text-red-400 hover:text-red-600 transition p-1">
                                 <i class="fa-solid fa-trash text-sm"></i>
@@ -137,7 +124,6 @@
                     </template>
                 </div>
 
-                {{-- Placeholder kosong --}}
                 <div x-show="items.length === 0"
                      class="text-center py-8 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 text-sm">
                     <i class="fa-solid fa-box-open text-2xl mb-2 block"></i>
@@ -145,7 +131,6 @@
                 </div>
             </div>
 
-            {{-- Tombol aksi --}}
             <div class="flex gap-3 pt-2">
                 <button type="submit"
                         :disabled="items.length === 0"
@@ -162,7 +147,6 @@
 </div>
 
 <script>
-// Fungsi menerima parameter data produk dari x-data HTML
 function transactionForm(initialProducts) {
     return {
         searchTerm:    '',
@@ -172,7 +156,6 @@ function transactionForm(initialProducts) {
         items:         [],
         debounceTimer: null,
 
-        // Assign data dari parameter
         allProducts: initialProducts,
 
         onSearch() {
@@ -213,7 +196,6 @@ function transactionForm(initialProducts) {
                 });
             }
 
-            // Reset search
             this.searchTerm    = '';
             this.searchResults = [];
             this.showResults   = false;

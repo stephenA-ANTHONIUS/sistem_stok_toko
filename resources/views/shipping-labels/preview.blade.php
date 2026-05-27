@@ -26,7 +26,8 @@
     </div>
 @else
 <div class="max-w-4xl" x-data="previewItems(
-    {{ json_encode(array_map(fn($i) => ['produk' => $i['produk'] ?? '', 'qty' => $i['qty'] ?? 1, 'harga_online' => $i['harga_online'] ?? 0, 'stock' => $i['stock'] ?? 0, 'original' => $i['original'] ?? $i['produk'], 'matched' => $i['matched'] ?? false], $mappedItems)) }},
+    {{ json_encode(array_map(fn($i) => ['produk' => $i['produk'] ?? '', 'qty' => $i['qty'] ?? 1, 'harga_online' => $i['harga_online'] ?? 0, 'stock' => $i['stock'] ?? 0,
+      'original' => $i['original'] ?? $i['produk'], 'matched' => $i['matched'] ?? false], $mappedItems)) }},
     {{ json_encode($products->map(fn($p) => ['id' => $p->id, 'nama_produk' => $p->nama_produk, 'harga_online' => $p->harga_online ?? $p->harga ?? 0, 'stock' => $p->jumlah_stok ?? 0])->values()) }}
 )">
 
@@ -35,7 +36,9 @@
         <i class="fa-solid fa-circle-info mt-0.5 shrink-0"></i>
         <div>
             <p class="font-semibold">Periksa hasil scan sebelum menyimpan</p>
-            <p class="text-blue-600 mt-0.5">Sistem telah mencocokkan nama produk dari PDF dengan database. Produk yang <span class="font-medium text-amber-600">berwarna kuning</span> belum cocok — pilih manual dari dropdown. Stok akan dikurangi otomatis setelah klik <strong>Simpan</strong>.</p>
+            <p class="text-blue-600 mt-0.5">Sistem telah mencocokkan nama produk dari PDF dengan database. Produk yang <span class="font-medium text-amber-600">berwarna kuning
+
+            </span> belum cocok — pilih manual dari dropdown. Stok akan dikurangi otomatis setelah klik <strong>Simpan</strong>.</p>
         </div>
     </div>
 

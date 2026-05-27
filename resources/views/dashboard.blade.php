@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="space-y-6">
-    {{-- Greeting Widget --}}
     <div class="mb-6 bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl px-6 py-5 flex items-center justify-between shadow-sm">
         <div>
             <p class="text-blue-200 text-sm mb-1">{{ now()->translatedFormat('l, d F Y') }}</p>
@@ -19,13 +18,11 @@
         </div>
     </div>
 
-    {{-- Omset Cards --}}
     <section class="rounded-2xl bg-white shadow-sm border border-gray-100 p-6">
         <h2 class="text-base font-bold text-gray-800 mb-1">Omset Penjualan</h2>
         <p class="text-sm text-gray-500 mb-5">Ringkasan omset offline, online, dan total penjualan.</p>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             @php
-                // Fungsi format disederhanakan: langsung format ke Rupiah dengan pemisah titik
                 function fmtRupiah($n) {
                     return 'Rp ' . number_format((int)$n, 0, ',', '.');
                 }
@@ -73,7 +70,6 @@
         </div>
     </section>
 
-    {{-- Ringkasan Gudang --}}
     <section class="rounded-2xl bg-white shadow-sm border border-gray-100 p-6">
         <h2 class="text-base font-bold text-gray-800 mb-1">Ringkasan Gudang</h2>
         <p class="text-sm text-gray-500 mb-5">Metrik stok dan aktivitas transaksi terbaru.</p>

@@ -38,9 +38,7 @@
         submitLogout()    { this.$refs.logoutForm.submit(); }
      }">
 
-    {{-- ═══════════════════════════════════════════════
-         MODAL KONFIRMASI HAPUS
-    ════════════════════════════════════════════════ --}}
+
     <div x-show="deleteModal"
          x-cloak
          x-transition:enter="transition ease-out duration-200"
@@ -89,9 +87,6 @@
         </div>
     </div>
 
-    {{-- ═══════════════════════════════════════════════
-         MODAL KONFIRMASI LOGOUT
-    ════════════════════════════════════════════════ --}}
     <div x-show="logoutModal"
          x-cloak
          x-transition:enter="transition ease-out duration-200"
@@ -140,9 +135,6 @@
         </div>
     </div>
 
-    {{-- ═══════════════════════════════════════════════
-         SIDEBAR
-    ════════════════════════════════════════════════ --}}
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
            class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-800 to-blue-900 text-white flex flex-col transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:flex">
 
@@ -212,7 +204,6 @@
             @endif
         </nav>
 
-        {{-- User info & tombol keluar --}}
         <div class="px-4 py-4 border-t border-blue-700">
             <div class="flex items-center gap-3 mb-3">
                 <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-xs font-bold">
@@ -224,7 +215,6 @@
                 </div>
             </div>
 
-            {{-- Form logout (submit via Alpine) --}}
             <form method="POST" action="{{ route('logout') }}" x-ref="logoutForm">
                 @csrf
                 <button type="button"
@@ -236,16 +226,10 @@
         </div>
     </aside>
 
-    {{-- Overlay mobile --}}
     <div x-show="sidebarOpen" @click="sidebarOpen = false" x-cloak
          class="fixed inset-0 z-40 bg-black/50 lg:hidden"></div>
-
-    {{-- ═══════════════════════════════════════════════
-         MAIN CONTENT
-    ════════════════════════════════════════════════ --}}
     <div class="flex-1 flex flex-col overflow-hidden">
 
-        {{-- Topbar --}}
         <header class="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-sm">
             <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-500 hover:text-gray-700">
                 <i class="fa-solid fa-bars text-xl"></i>
@@ -257,7 +241,6 @@
             </div>
         </header>
 
-        {{-- Page content --}}
         <main class="flex-1 overflow-y-auto p-6">
 
             @if(session('success'))

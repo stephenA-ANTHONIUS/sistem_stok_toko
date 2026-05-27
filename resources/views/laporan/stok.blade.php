@@ -5,14 +5,12 @@
 @section('content')
 <div class="space-y-6">
 
-    {{-- Chart Stok --}}
     <section class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
         <h2 class="text-base font-bold text-gray-800 mb-1">Grafik Stok Masuk & Keluar (7 Hari)</h2>
         <p class="text-sm text-gray-500 mb-5">Perbandingan total qty stok masuk vs stok keluar per hari.</p>
         <canvas id="chartStok" height="100"></canvas>
     </section>
 
-    {{-- Tabel Stok Produk --}}
     <section class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
         <h2 class="text-base font-bold text-gray-800 mb-1">Laporan Stok Semua Produk</h2>
         <p class="text-sm text-gray-500 mb-5">Status stok saat ini untuk seluruh produk terdaftar.</p>
