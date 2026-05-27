@@ -77,6 +77,7 @@
 
             <input type="hidden" name="image_path" value="{{ $data['image_path'] }}">
             <input type="hidden" name="raw_text" value="{{ $data['raw_text'] }}">
+            <input type="hidden" name="label_id" value="{{ $label->id }}">
 
             <div class="space-y-2">
 
@@ -252,6 +253,7 @@ function previewItems(initialItems, dbProducts) {
                 item._stockLow = Number(item.qty || 0) > item.stock;
             }
         },
+        
 
         updateStockWarning(index) {
             const item = this.items[index];

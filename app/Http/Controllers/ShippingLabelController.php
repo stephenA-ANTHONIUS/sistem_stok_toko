@@ -7,7 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Smalot\PdfParser\Parser;
-    
+
 class ShippingLabelController extends Controller
 {
     public function index()
@@ -21,6 +21,10 @@ class ShippingLabelController extends Controller
         return view('shipping-labels.create');
     }
 
+    /**
+     * STEP 1: Upload PDF → parse → simpan ke DB sebagai draft → session hanya simpan ID
+     * (Solusi session payload terlalu besar di Vercel/serverless)
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -41,28 +45,46 @@ class ShippingLabelController extends Controller
         }
 
         $path = $file->store('resi', 'public');
-        Session::put('shipping_label_preview', [
+
+        // Simpan ke DB sebagai draft (items masih kosong, diisi saat confirm)
+        // Session hanya menyimpan ID — tidak ada risiko payload besar
+        $label = ShippingLabel::create([
             'image_path' => $path,
             'raw_text'   => $rawText,
-            'items'      => $items,
+            'items'      => [],
         ]);
+
+        Session::put('shipping_label_preview_id', $label->id);
 
         return redirect()->route('shipping-labels.preview');
     }
 
+    /**
+     * STEP 2: Tampilkan preview — baca dari DB berdasarkan ID di session
+     */
     public function showPreview()
     {
-        $data = Session::get('shipping_label_preview');
+        $id = Session::get('shipping_label_preview_id');
 
-        if (! $data) {
+        if (! $id) {
             return redirect()->route('shipping-labels.create')
                 ->with('error', 'Sesi habis atau tidak ada data untuk ditampilkan. Silakan upload ulang.');
         }
 
+        $label = ShippingLabel::find($id);
+
+        if (! $label) {
+            return redirect()->route('shipping-labels.create')
+                ->with('error', 'Data tidak ditemukan. Silakan upload ulang.');
+        }
+
         $products = Product::orderBy('nama_produk', 'asc')->get();
 
-        $mappedItems = collect($data['items'])->map(function ($item) use ($products) {
-            $scanName = trim($item['produk'] ?? '');
+        // Parse ulang dari raw_text yang sudah tersimpan di DB
+        $parsedItems = $this->parseItems($label->raw_text);
+
+        $mappedItems = collect($parsedItems)->map(function ($item) use ($products) {
+            $scanName       = trim($item['produk'] ?? '');
             $matchedProduct = $this->findBestMatchingProduct($scanName, $products);
 
             return [
@@ -75,18 +97,34 @@ class ShippingLabelController extends Controller
             ];
         })->toArray();
 
-        return view('shipping-labels.preview', compact('data', 'mappedItems', 'products'));
+        $data = [
+            'image_path' => $label->image_path,
+            'raw_text'   => $label->raw_text,
+        ];
+
+        return view('shipping-labels.preview', compact('data', 'mappedItems', 'products', 'label'));
     }
 
+    /**
+     * STEP 3: Konfirmasi → update items di record yang sudah ada → kurangi stok
+     */
     public function confirmStore(Request $request)
     {
-        $items = [];
+        $id    = Session::get('shipping_label_preview_id');
+        $label = ShippingLabel::find($id ?? $request->input('label_id'));
+
+        if (! $label) {
+            return redirect()->route('shipping-labels.create')
+                ->with('error', 'Data tidak ditemukan. Silakan upload ulang.');
+        }
+
+        $items  = [];
         $errors = [];
 
         if ($request->has('items')) {
             foreach ($request->items as $item) {
                 $produk = trim($item['produk'] ?? '');
-                $qty = isset($item['qty']) ? (int) $item['qty'] : 0;
+                $qty    = isset($item['qty']) ? (int) $item['qty'] : 0;
 
                 if (empty($produk) || $qty < 1) {
                     continue;
@@ -115,26 +153,22 @@ class ShippingLabelController extends Controller
                 ->with('error', implode(' ', $errors));
         }
 
-        ShippingLabel::create([
-            'image_path' => $request->input('image_path'),
-            'raw_text'   => $request->input('raw_text'),
-            'items'      => $items,
-        ]);
+        // Update record draft yang sudah ada — ini yang memicu booted() untuk kurangi stok
+        $label->update(['items' => $items]);
 
-        Session::forget('shipping_label_preview');
+        Session::forget('shipping_label_preview_id');
 
         return redirect()->route('shipping-labels.index')
             ->with('success', 'Resi berhasil disimpan dan stok telah diperbarui.');
     }
 
     /**
-     * FUNGSI EDIT YANG SUDAH DIPERBAIKI
+     * FUNGSI EDIT — tidak berubah
      */
     public function edit(ShippingLabel $shippingLabel)
     {
         $products = Product::orderBy('nama_produk', 'asc')->get();
 
-        // PERBAIKAN: Langsung ambil data produk asli dari DB resi, tidak perlu di-fuzzy match lagi!
         $mappedItems = collect($shippingLabel->items ?? [])->map(function ($item) {
             return [
                 'produk' => trim($item['produk'] ?? ''),
@@ -173,6 +207,11 @@ class ShippingLabelController extends Controller
         $shippingLabel->delete();
         return back()->with('success', 'Resi berhasil dihapus.');
     }
+
+    // =========================================================================
+    // TIDAK ADA PERUBAHAN DI BAWAH INI
+    // findBestMatchingProduct & parseItems dibiarkan persis seperti aslinya
+    // =========================================================================
 
     private function findBestMatchingProduct(string $scanName, $products)
     {
@@ -216,7 +255,7 @@ class ShippingLabelController extends Controller
 
         return $bestProduct;
     }
-    
+
     private function parseItems(string $text): array
     {
         $items = [];
