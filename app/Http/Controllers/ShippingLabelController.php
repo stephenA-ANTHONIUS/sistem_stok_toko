@@ -44,7 +44,7 @@ class ShippingLabelController extends Controller
             $rawText = 'Gagal membaca PDF: ' . $e->getMessage();
         }
 
-        $path = $file->store('resi', 'public');
+        $path = $file->getClientOriginalName();
 
         // Simpan ke DB sebagai draft (items masih kosong, diisi saat confirm)
         // Session hanya menyimpan ID — tidak ada risiko payload besar
