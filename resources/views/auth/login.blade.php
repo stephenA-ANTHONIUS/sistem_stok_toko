@@ -13,7 +13,7 @@
             <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-lg mb-4">
                 <i class="fa-solid fa-store text-blue-800 text-2xl"></i>
             </div>
-            <h1 class="text-2xl font-bold text-white">Sistem Stok Toko</h1>
+            <h1 class="text-2xl font-bold text-white">Sistem Stok Toko Kemplang</h1>
             <p class="text-blue-300 text-sm mt-1">Silakan login untuk melanjutkan</p>
         </div>
 
